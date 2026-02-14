@@ -13,10 +13,11 @@
     
     <style>
         :root {
-            --primary-color: #d48a96;
-            --secondary-color: #fdf6e3;
-            --text-color: #5c4b51;
-            --accent-gold: #cca876;
+            /* 迪士尼風格色調：金色、魔幻藍紫、星空色 */
+            --primary-color: #ffda79; /* 亮金色 */
+            --secondary-color: rgba(255, 255, 255, 0.15);
+            --text-color: #ffffff;
+            --accent-gold: #ffd700;
             --handwriting-font: 'Long Cang', cursive;
             --english-font: 'Dancing Script', cursive;
             --serif-font: 'Noto Serif TC', serif;
@@ -26,41 +27,48 @@
 
         body {
             font-family: var(--serif-font);
-            background: linear-gradient(135deg, #fffbf0 0%, #fcefe8 100%);
+            /* 迪士尼魔法星空漸層 */
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 30%, #0f3460 60%, #533483 100%);
+            background-attachment: fixed;
             margin: 0;
             color: var(--text-color);
             scroll-behavior: smooth;
-            /* 原本的紙張紋理 */
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
-            overflow-x: hidden; /* 防止角色圖片超出邊界產生橫向捲軸 */
+            overflow-x: hidden;
         }
 
-        /* --- 新增：背景角色樣式 --- */
+        /* --- 新增：奇幻星塵 (Pixie Dust) 效果 --- */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
+                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px);
+            background-size: 550px 550px, 350px 350px, 250px 250px;
+            background-position: 0 0, 40px 60px, 130px 270px;
+            z-index: -1;
+            animation: stars 20s linear infinite;
+        }
+
+        @keyframes stars {
+            from { transform: translateY(0); }
+            to { transform: translateY(-550px); }
+        }
+
+        /* 背景角色樣式 */
         .bg-character {
-            position: fixed; /* 固定在視窗，不隨捲動移動 */
-            z-index: -1; /* 放在最底層，文字後方 */
-            opacity: 0.15; /* 非常淡的透明度，像浮水印 */
-            pointer-events: none; /* 確保滑鼠點擊穿透，不影響操作 */
-            filter: sepia(0.2) contrast(0.9); /* 稍微調整色調融入暖色背景 */
-            transition: all 0.5s ease;
+            position: fixed;
+            z-index: 0;
+            opacity: 0.25; /* 增加一點點亮度，在深色背景中較清晰 */
+            pointer-events: none;
+            filter: drop-shadow(0 0 10px rgba(255, 218, 121, 0.3));
         }
+        #donald { bottom: -10px; left: -20px; width: 180px; transform: rotate(10deg); }
+        #olaf { top: 60px; right: -10px; width: 130px; transform: rotate(-15deg); }
 
-        #donald {
-            bottom: -20px;
-            left: -30px;
-            width: 200px;
-            transform: rotate(15deg);
-        }
-
-        #olaf {
-            top: 50px;
-            right: -20px;
-            width: 150px;
-            transform: rotate(-10deg);
-        }
-        /* ------------------------ */
-
-        .hw-text, h1, h2, .gift-item, .start-btn, #result-text, .subtitle {
+        /* 手寫風文字修正 */
+        .hw-text, h1, h2, .gift-item, .start-btn, #result-text, .subtitle, .draw-hint {
             font-family: var(--handwriting-font) !important;
             text-rendering: optimizeLegibility;
             -webkit-font-smoothing: antialiased;
@@ -75,140 +83,142 @@
             padding: 40px 20px;
             box-sizing: border-box;
             text-align: center;
-            position: relative; /* 確保內容在角色上方 */
+            position: relative;
             z-index: 1;
         }
 
-        h1 { font-size: 2.8rem; margin-bottom: 10px; color: var(--primary-color); }
-        
+        h1 { font-size: 2.8rem; margin-bottom: 5px; color: var(--accent-gold); text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
         .english-title {
             font-family: var(--english-font) !important;
             font-size: 1.8rem;
-            color: var(--accent-gold);
+            color: #ffffff;
             margin-bottom: 25px;
+            letter-spacing: 2px;
         }
+        .subtitle { font-size: 1.3rem; line-height: 1.6; margin-bottom: 30px; color: #f0f0f0; }
 
-        .subtitle { font-size: 1.3rem; line-height: 1.8; margin-bottom: 40px; }
-
+        /* 禮物網格：展示 6 個選項 */
         .gift-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            gap: 15px;
             max-width: 600px;
             width: 100%;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
         }
-        
         .gift-item {
-            background: rgba(253, 246, 227, 0.9); /* 稍微增加不透明度，避免被背景角色干擾 */
-            padding: 20px 10px;
-            border-radius: 20px 10px 20px 10px;
-            box-shadow: 5px 5px 15px rgba(212, 138, 150, 0.1);
-            font-size: 1.1rem;
-            border: 1px solid rgba(212, 138, 150, 0.2);
-            transition: 0.3s;
-            backdrop-filter: blur(2px);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 10px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 1rem;
+            border: 1px solid rgba(255, 218, 121, 0.3);
+            backdrop-filter: blur(8px);
+            color: #fff;
         }
+        .icon { font-size: 28px; display: block; margin-bottom: 8px; }
 
-        .icon { font-size: 30px; display: block; margin-bottom: 10px; }
-
+        /* 迪士尼風格按鈕 */
         .start-btn {
             -webkit-appearance: none;
-            background: linear-gradient(45deg, var(--primary-color), #eba3b0);
-            color: white;
+            background: linear-gradient(45deg, #ffd700, #ff8c00);
+            color: #1a1a2e;
             border: none;
             padding: 16px 45px;
             font-size: 1.6rem;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(212, 138, 150, 0.3);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+            font-weight: bold;
+            transition: 0.3s;
         }
+        .start-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255, 215, 0, 0.8); }
 
+        /* 音樂控制 */
         #music-control {
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 100;
-            background: white;
+            background: rgba(255, 255, 255, 0.2);
             width: 45px;
             height: 45px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             cursor: pointer;
             font-size: 20px;
-            border: 2px solid var(--secondary-color);
+            border: 1px solid var(--accent-gold);
+            color: #fff;
+            backdrop-filter: blur(5px);
         }
-
         .playing { animation: rotate 3s linear infinite; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         .lottery-container {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
             padding: 40px 20px;
             border-radius: 30px;
-            border: 2px dashed var(--accent-gold);
+            border: 2px solid var(--accent-gold);
             width: 90%;
             max-width: 400px;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
         }
-
-        .gift-box-anim { font-size: 100px; cursor: pointer; margin: 20px 0; display: inline-block; }
-        #result-text { font-size: 1.8rem; color: var(--primary-color); min-height: 1.5em; }
+        .gift-box-anim { font-size: 100px; cursor: pointer; margin: 20px 0; display: inline-block; filter: drop-shadow(0 0 15px rgba(255,255,255,0.5)); }
+        #result-text { font-size: 1.8rem; color: var(--accent-gold); min-height: 1.8em; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
 
         @media (max-width: 480px) {
             h1 { font-size: 2.2rem; }
-            .gift-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-            .gift-item { font-size: 0.95rem; }
-            /* 手機版調整角色大小與位置 */
-            #donald { width: 150px; bottom: -10px; left: -20px; }
-            #olaf { width: 100px; top: 70px; right: -15px; }
+            .gift-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .gift-item { font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
 
-<audio id="bgm" loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-</audio>
-
 <img src="https://upload.wikimedia.org/wikipedia/en/thumb/b/b4/Donald_Duck.svg/220px-Donald_Duck.svg.png" alt="唐老鴨" class="bg-character" id="donald">
 <img src="https://upload.wikimedia.org/wikipedia/en/thumb/d/d7/Olaf_from_Disney%27s_Frozen.png/170px-Olaf_from_Disney%27s_Frozen.png" alt="雪寶" class="bg-character" id="olaf">
 
 <div id="music-control">🎵</div>
+<audio id="bgm" loop>
+    <source src="https://www.chosic.com/wp-content/uploads/2021/04/Happy-Birthday-Piano-Version.mp3" type="audio/mpeg">
+</audio>
 
 <div class="section" id="preview-zone">
     <h1>親愛的阿吟，生日快樂！</h1>
-    <div class="english-title">Happy Birthday, Dear Yin.</div>
+    <div class="english-title">✨ A Magical Day for You ✨</div>
     <p class="subtitle">
-        常熬夜也要記得愛護身體。<br>
-        龍二哥準備了幾份專屬於你的驚喜，<br>
-        點擊下方按鈕，揭曉你的專屬好禮 💖
+        願這份魔法帶走你的疲累。<br>
+        龍二哥準備了六份健康好禮，<br>
+        請先過目，再下滑揭曉你的驚喜 💖
     </p>
     
     <div class="gift-grid">
-        <div class="gift-item"><span class="icon">🧘‍♀️</span>Lululemon 套組</div>
-        <div class="gift-item"><span class="icon">😴</span>真絲遮光眼罩</div>
-        <div class="gift-item"><span class="icon">🔫</span>深層筋膜槍</div>
-        <div class="gift-item"><span class="icon">💆‍♀️</span>舒壓 SPA 課程</div>
+        <div class="gift-item"><span class="icon">🧘‍♀️</span>Lululemon<br>運動服飾套組</div>
+        <div class="gift-item"><span class="icon">😴</span>高品質真絲<br>全遮光眼罩</div>
+        <div class="gift-item"><span class="icon">🔫</span>輕巧版深層<br>舒緩筋膜槍</div>
+        <div class="gift-item"><span class="icon">🛌</span>人體工學<br>午睡紓壓枕</div>
+        <div class="gift-item"><span class="icon">💆‍♀️</span>全身經絡<br>深層 SPA</div>
+        <div class="gift-item"><span class="icon">⌚</span>智慧健康<br>監測手錶</div>
     </div>
 
-    <button class="start-btn" id="go-draw-btn">前往抽取禮物 ✨</button>
+    <button class="start-btn" id="go-draw-btn">開啟魔法驚喜 ✨</button>
 </div>
 
 <div class="section" id="draw-zone">
     <div class="lottery-container">
-        <h2 class="hw-text">✨ 命運禮物盒 ✨</h2>
+        <h2 class="hw-text" style="color:var(--accent-gold);">✨ 命運禮物盒 ✨</h2>
+        <p class="draw-hint" style="color:#eee;">輕觸禮物盒，揭曉生日驚喜</p>
         <div class="gift-box-anim" id="drawBtn">🎁</div>
         <div id="result-text"></div>
     </div>
-    <p style="margin-top: 40px; font-family: var(--english-font); color: var(--accent-gold); font-size: 1.2rem;">With Love, from 龍二哥</p>
+    <p style="margin-top: 40px; font-family: var(--english-font); color: var(--accent-gold); font-size: 1.5rem;">With Love, from 龍二哥</p>
 </div>
 
 <script>
-    // ... (JavaScript 部分與之前相同，無需更動) ...
     const audio = document.getElementById('bgm');
     const musicBtn = document.getElementById('music-control');
     const goDrawBtn = document.getElementById('go-draw-btn');
@@ -222,7 +232,7 @@
             audio.pause();
             musicBtn.classList.remove('playing');
         } else {
-            audio.play().catch(() => { console.log("等待互動後播放"); });
+            audio.play().catch(() => { console.log("等待互動播放"); });
             musicBtn.classList.add('playing');
         }
         isPlaying = !isPlaying;
@@ -236,10 +246,12 @@
     });
 
     const gifts = [
-        { name: "Lululemon 專業運動服飾", icon: "🧘‍♀️" },
-        { name: "高品質真絲遮光眼罩", icon: "😴" },
+        { name: "Lululemon 專業運動服飾套組", icon: "🧘‍♀️" },
+        { name: "高品質真絲全遮光眼罩", icon: "😴" },
         { name: "輕巧版深層舒緩筋膜槍", icon: "🔫" },
-        { name: "全身經絡深層按摩 SPA", icon: "💆‍♀️" }
+        { name: "人體工學午睡紓壓枕", icon: "🛌" },
+        { name: "全身經絡深層按摩 SPA 課程", icon: "💆‍♀️" },
+        { name: "智慧健康監測運動手錶", icon: "⌚" }
     ];
 
     drawBtn.addEventListener('click', () => {
@@ -248,25 +260,32 @@
         let count = 0;
         const interval = setInterval(() => {
             resultText.innerText = gifts[Math.floor(Math.random() * gifts.length)].name;
+            resultText.style.color = count % 2 === 0 ? '#ffd700' : '#ffffff';
             count++;
-            if (count > 12) {
+            if (count > 15) {
                 clearInterval(interval);
                 finalize();
             }
-        }, 100);
+        }, 80);
 
         function finalize() {
             const finalGift = gifts[Math.floor(Math.random() * gifts.length)];
+            
             confetti({
-                particleCount: 150,
-                spread: 70,
+                particleCount: 200,
+                spread: 90,
                 origin: { y: 0.6 },
-                colors: ['#d48a96', '#cca876', '#ffffff']
+                colors: ['#ffd700', '#ffffff', '#ff8c00', '#533483']
             });
+
             drawBtn.innerHTML = "🎉";
-            resultText.innerHTML = `恭喜獲得：<br>${finalGift.icon} ${finalGift.name}`;
+            resultText.style.color = 'var(--accent-gold)';
+            resultText.innerHTML = `恭喜阿吟獲得：<br>${finalGift.icon} ${finalGift.name}`;
             isOpened = true;
-            setTimeout(() => { alert("阿吟生日快樂！截圖傳給龍二哥領獎喔！"); }, 500);
+
+            setTimeout(() => {
+                alert("✨ 魔法成真！阿吟快截圖傳給龍二哥吧 ❤️");
+            }, 600);
         }
     });
 </script>
