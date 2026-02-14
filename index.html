@@ -3,169 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>妹妹生日快樂！健康禮物選拔賽</title>
+    <title>To 妹妹：生日快樂與專屬寵愛</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Long+Cang&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
     <style>
         :root {
-            --primary-color: #ff85a2;
-            --bg-color: #fff5f7;
+            /* 定義新色票：更柔和、高級 */
+            --primary-color: #d48a96; /* 乾燥玫瑰粉 */
+            --secondary-color: #fdf6e3; /* 奶油米白 */
+            --text-color: #5c4b51; /* 暖深灰 */
+            --accent-gold: #cca876; /* 質感金 */
+            /* 定義字體堆疊 */
+            --handwriting-font: 'Long Cang', cursive; /* 中文手寫 */
+            --english-handwriting: 'Dancing Script', cursive; /* 英文手寫 */
+            --serif-font: 'Noto Serif TC', serif; /* 易讀襯線體 */
         }
+
         body {
-            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-            background-color: var(--bg-color);
+            font-family: var(--serif-font);
+            /* 模擬高級紙張的柔和漸層背景 */
+            background: linear-gradient(135deg, #fffbf0 0%, #fcefe8 100%);
             margin: 0;
-            color: #444;
-            scroll-behavior: smooth; /* 讓捲動更平滑 */
+            color: var(--text-color);
+            scroll-behavior: smooth;
+            /* 加入極細微的噪點紋理，增加紙張感 (選擇性) */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
         }
+
+        h1, h2 {
+            font-family: var(--handwriting-font);
+            font-weight: normal;
+            color: var(--primary-color);
+        }
+
+        h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        
+        .english-title {
+            font-family: var(--english-handwriting);
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            margin-top: -10px;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-family: var(--handwriting-font);
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            text-align: center;
+            line-height: 1.8;
+        }
+
         .section {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 30px 20px;
             box-sizing: border-box;
-        }
-        h1 { color: #d63384; margin-bottom: 10px; }
-        .subtitle { color: #888; margin-bottom: 30px; text-align: center; }
-
-        /* 禮物預覽清單樣式 */
-        .gift-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 15px;
-            max-width: 600px;
-            width: 100%;
-            margin-bottom: 40px;
-        }
-        .gift-item {
-            background: white;
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            text-align: center;
-            font-size: 0.9rem;
-            border: 2px solid transparent;
-            transition: 0.3s;
-        }
-        .gift-item:hover { border-color: var(--primary-color); }
-        .icon { font-size: 30px; display: block; margin-bottom: 8px; }
-
-        .start-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 133, 162, 0.4);
-            transition: 0.3s;
-        }
-        .start-btn:hover { background-color: #ff5c8a; transform: translateY(-3px); }
-
-        /* 抽獎區樣式 */
-        #draw-zone { background-color: white; width: 100%; }
-        .lottery-box {
-            text-align: center;
-            padding: 40px;
-            border: 3px dashed var(--primary-color);
-            border-radius: 30px;
-            background: var(--bg-color);
-        }
-        .gift-box-anim {
-            font-size: 100px;
-            cursor: pointer;
-            margin: 20px 0;
-            display: inline-block;
-        }
-        #result-text {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #d63384;
-            margin-top: 20px;
-            min-height: 1.6em;
-        }
-        .footer { margin-top: 50px; font-size: 0.8rem; color: #ccc; }
-    </style>
-</head>
-<body>
-
-<div class="section" id="preview-zone">
-    <h1>🎂 生日快樂！妹妹</h1>
-    <p class="subtitle">今年哥哥準備了「健康養生大禮包」<br>點擊下方按鈕開始抽取你的專屬好禮！</p>
-    
-    <div class="gift-grid">
-        <div class="gift-item"><span class="icon">🧘‍♀️</span>Lululemon 裝備</div>
-        <div class="gift-item"><span class="icon">😴</span>真絲遮光眼罩</div>
-        <div class="gift-item"><span class="icon">🔫</span>深層筋膜槍</div>
-        <div class="gift-item"><span class="icon">🛌</span>紓壓午睡枕</div>
-        <div class="gift-item"><span class="icon">💆‍♀️</span>全身按摩 SPA</div>
-        <div class="gift-item"><span class="icon">⌚</span>健康監測手錶</div>
-    </div>
-
-    <button class="start-btn" onclick="document.getElementById('draw-zone').scrollIntoView();">準備好了，去抽獎！ ✨</button>
-</div>
-
-<div class="section" id="draw-zone">
-    <div class="lottery-box">
-        <h2>命運抽獎時刻</h2>
-        <p>點擊下方的禮物盒，看看選中哪一個？</p>
-        <div class="gift-box-anim" id="drawBtn">🎁</div>
-        <div id="result-text"></div>
-    </div>
-    
-    <p class="footer">Made with ❤️ by 哥哥 (MIS Dept.)</p>
-</div>
-
-<script>
-    const gifts = [
-        { name: "Lululemon 專業運動服飾一套", icon: "🧘‍♀️" },
-        { name: "高品質真絲全遮光眼罩", icon: "😴" },
-        { name: "輕巧版深層舒緩筋膜槍", icon: "🔫" },
-        { name: "人體工學午睡紓壓枕", icon: "🛌" },
-        { name: "全身經絡深層按摩 SPA 課程", icon: "💆‍♀️" },
-        { name: "智慧健康監測運動手錶", icon: "⌚" }
-    ];
-
-    const drawBtn = document.getElementById('drawBtn');
-    const resultText = document.getElementById('result-text');
-    let isOpened = false;
-
-    drawBtn.addEventListener('click', () => {
-        if (isOpened) return;
-
-        // 簡單的隨機滾動效果感
-        let count = 0;
-        const interval = setInterval(() => {
-            resultText.innerText = gifts[Math.floor(Math.random() * gifts.length)].name;
-            count++;
-            if (count > 10) {
-                clearInterval(interval);
-                finalize();
-            }
-        }, 100);
-
-        function finalize() {
-            const finalGift = gifts[Math.floor(Math.random() * gifts.length)];
-            
-            // 噴灑紙屑
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
-
-            drawBtn.innerHTML = "🎉";
-            resultText.innerHTML = `恭喜獲得：<br>${finalGift.icon} ${finalGift.name}`;
-            isOpened = true;
-
-            setTimeout(() => {
-                alert("太棒了！記得截圖傳給哥哥領取喔！");
-            }, 500);
-        }
-    });
-</script>
-
-</body>
-</html>
