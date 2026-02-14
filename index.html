@@ -53,12 +53,12 @@
         .bg-character {
             position: fixed;
             z-index: 0;
-            opacity: 0.25;
+            opacity: 0.3; /* 提高一點透明度讓新雪寶更清楚 */
             pointer-events: none;
             filter: drop-shadow(0 0 10px rgba(255, 218, 121, 0.3));
         }
         #donald { bottom: -10px; left: -20px; width: 180px; transform: rotate(10deg); }
-        #olaf { top: 60px; right: -10px; width: 130px; transform: rotate(-15deg); }
+        #olaf { top: 60px; right: -10px; width: 150px; transform: rotate(-15deg); }
 
         .hw-text, h1, h2, .gift-item, .start-btn, #result-text, .subtitle {
             font-family: var(--handwriting-font) !important;
@@ -115,7 +115,6 @@
             transition: 0.3s;
         }
 
-        /* 隱藏 YouTube 播放器 */
         #yt-player-container {
             position: absolute;
             width: 1px; height: 1px;
@@ -171,7 +170,8 @@
 </div>
 
 <img src="donald.png" alt="唐老鴨" class="bg-character" id="donald">
-<img src="olaf.png" alt="雪寶" class="bg-character" id="olaf">
+
+<img src="https://www.clipartmax.com/png/middle/83-834319_frozen-clip-art-olaf-frozen.png" alt="雪寶" class="bg-character" id="olaf">
 
 <div id="music-control">🎵</div>
 
@@ -212,12 +212,11 @@
     let isPlaying = false;
     let isOpened = false;
 
-    // YouTube API 初始化
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
             height: '1',
             width: '1',
-            videoId: 'TeQ_TTyLGMs', // 龍二哥指定的影片 ID
+            videoId: 'TeQ_TTyLGMs',
             playerVars: {
                 'autoplay': 0,
                 'controls': 0,
