@@ -16,6 +16,7 @@
             --primary-color: #ffda79;
             --text-color: #ffffff;
             --accent-gold: #ffd700;
+            --magic-purple: #a855f7;
             --cartoon-font: 'Fredoka', '微軟正黑體', 'Microsoft JhengHei', 'PingFang TC', system-ui, sans-serif;
         }
 
@@ -33,102 +34,67 @@
             font-weight: 600;
         }
 
-        /* 奇幻星塵背景 */
         body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
                 radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
                 radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px);
             background-size: 550px 550px, 350px 350px;
-            z-index: -1;
-            animation: stars 25s linear infinite;
+            z-index: -1; animation: stars 25s linear infinite;
         }
+        @keyframes stars { from { transform: translateY(0); } to { transform: translateY(-550px); } }
 
-        @keyframes stars {
-            from { transform: translateY(0); }
-            to { transform: translateY(-550px); }
-        }
-
-        /* --- 開場遮罩層 --- */
         #start-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #1a1a2e 0%, #533483 100%);
-            z-index: 9999;
-            display: flex; justify-content: center; align-items: center;
+            z-index: 9999; display: flex; justify-content: center; align-items: center;
             transition: opacity 1.5s ease;
         }
 
-        /* --- 結尾通知頁面 (魔法成真) --- */
         #result-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(26, 26, 46, 0.95); /* 深色半透明背景 */
-            backdrop-filter: blur(10px);
-            z-index: 10000; /* 比開場更高 */
-            display: none; /* 預設隱藏 */
-            justify-content: center; align-items: center; flex-direction: column;
-            text-align: center;
-            padding: 20px;
-            animation: fadeIn 0.5s ease;
+            background: rgba(26, 26, 46, 0.95); backdrop-filter: blur(10px);
+            z-index: 10000; display: none; justify-content: center; align-items: center;
+            flex-direction: column; text-align: center; padding: 20px; animation: fadeIn 0.5s ease;
         }
-        
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* 通用按鈕樣式 */
-        .magic-btn {
-            background: transparent;
-            border: 3px solid var(--accent-gold);
-            color: var(--accent-gold);
-            padding: 20px 40px;
-            font-size: 1.6rem;
-            border-radius: 25px;
-            cursor: pointer;
-            font-family: var(--cartoon-font);
-            font-weight: 700;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
-            animation: pulse 2s infinite;
+        .magic-btn, .start-btn {
+            background: transparent; border: 3px solid var(--accent-gold); color: var(--accent-gold);
+            padding: 20px 40px; font-size: 1.6rem; border-radius: 25px; cursor: pointer;
+            font-family: var(--cartoon-font); font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+            animation: pulse 2s infinite; -webkit-appearance: none;
         }
+        .start-btn {
+             background: linear-gradient(45deg, #ffd700, #ff8c00); color: #1a1a2e; border: none;
+             box-shadow: 0 0 25px rgba(255, 215, 0, 0.7); animation: none; transition: 0.3s;
+        }
+        .start-btn:hover { transform: scale(1.05); box-shadow: 0 0 40px rgba(255, 215, 0, 1); }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        /* --- 圖片樣式 (已放大) --- */
-        .bg-character {
-            position: fixed; z-index: 0; opacity: 0.3; pointer-events: none;
-            filter: drop-shadow(0 0 10px rgba(255, 218, 121, 0.3));
-        }
-        /* 唐老鴨放大至 280px */
+        .bg-character { position: fixed; z-index: 0; opacity: 0.3; pointer-events: none; filter: drop-shadow(0 0 10px rgba(255, 218, 121, 0.3)); }
         #donald { bottom: -20px; left: -30px; width: 280px; transform: rotate(10deg); }
-        /* 雪寶放大至 220px */
         #olaf { top: 50px; right: -20px; width: 220px; transform: rotate(-15deg); }
 
-        /* 字體強制設定 */
         h1, h2, .gift-item, .start-btn, #result-text, .subtitle, p, .english-title, .result-title, .result-gift {
             font-family: var(--cartoon-font) !important;
         }
 
         .section {
-            min-height: 100vh;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: 40px 20px; position: relative; z-index: 1; text-align: center;
+            min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; padding: 40px 20px; position: relative; z-index: 1; text-align: center;
         }
+
+        /* --- 抽獎區預設隱藏 --- */
+        #draw-zone { display: none; opacity: 0; transition: opacity 1s ease; }
 
         h1 { font-size: 2.8rem; margin-bottom: 10px; color: var(--accent-gold); text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); font-weight: 700; }
         .english-title { font-size: 2.2rem; color: #ffffff; margin-bottom: 25px; letter-spacing: 1px; font-weight: 600; }
-        
-        .subtitle { 
-            font-size: 1.4rem; line-height: 1.8; margin-bottom: 40px; color: #f0f0f0; font-weight: 600; 
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        }
+        .subtitle { font-size: 1.4rem; line-height: 1.8; margin-bottom: 40px; color: #f0f0f0; font-weight: 600; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
 
         .gift-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;
-            max-width: 600px; width: 100%; margin-bottom: 40px;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 600px; width: 100%; margin-bottom: 40px;
         }
         .gift-item {
             background: rgba(255, 255, 255, 0.15); padding: 15px 10px; border-radius: 20px;
@@ -138,54 +104,59 @@
         }
         .icon { font-size: 36px; display: block; margin-bottom: 10px; }
 
-        .start-btn {
-            -webkit-appearance: none; background: linear-gradient(45deg, #ffd700, #ff8c00);
-            color: #1a1a2e; border: none; padding: 18px 50px; font-size: 1.6rem;
-            border-radius: 50px; cursor: pointer; box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
-            transition: 0.3s; font-weight: 700;
-        }
-
         #yt-player-container { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
-
-        #music-control {
-            position: fixed; top: 20px; right: 20px; z-index: 100;
-            background: rgba(255, 255, 255, 0.2); width: 50px; height: 50px; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer;
-            border: 2px solid var(--accent-gold); color: #fff; backdrop-filter: blur(5px);
-            opacity: 0; transition: opacity 1s; font-size: 24px;
-        }
-        .playing { animation: rotate 3s linear infinite; }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         .lottery-container {
             background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(15px); padding: 40px 20px;
             border-radius: 35px; border: 3px solid var(--accent-gold); width: 90%; max-width: 400px;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
         }
-        .gift-box-anim { font-size: 110px; cursor: pointer; margin: 20px 0; display: inline-block; }
-        #result-text { font-size: 1.8rem; color: var(--accent-gold); min-height: 2em; line-height: 1.4; font-weight: 700; }
 
-        /* 結果頁面內容樣式 */
+        /* --- 全新魔幻禮物盒樣式 --- */
+        .magic-box-container {
+            position: relative; width: 150px; height: 150px;
+            display: flex; justify-content: center; align-items: center;
+            margin: 30px auto;
+            animation: floater 3s ease-in-out infinite; cursor: pointer;
+        }
+        /* 魔法光環脈衝 */
+        .magic-box-container::before, .magic-box-container::after {
+            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            border-radius: 50%; width: 100px; height: 100px;
+            box-shadow: 0 0 20px var(--accent-gold), inset 0 0 20px var(--accent-gold);
+            animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite; opacity: 0.7;
+        }
+        .magic-box-container::after { animation-delay: 1s; box-shadow: 0 0 20px var(--magic-purple), inset 0 0 20px var(--magic-purple); }
+        
+        .gift-box-anim {
+            font-size: 110px; z-index: 2;
+            filter: drop-shadow(0 0 25px var(--accent-gold)); transition: transform 0.3s, filter 0.3s;
+        }
+        .magic-box-container:hover .gift-box-anim {
+            transform: scale(1.2) rotate(5deg);
+            filter: drop-shadow(0 0 50px var(--accent-gold)) drop-shadow(0 0 20px var(--magic-purple));
+        }
+        @keyframes floater { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        @keyframes pulse-ring { 0% { width: 100px; height: 100px; opacity: 1; } 100% { width: 250px; height: 250px; opacity: 0; } }
+        /* ----------------------- */
+
+        #result-text { font-size: 1.8rem; color: var(--accent-gold); min-height: 2em; line-height: 1.4; font-weight: 700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+
         .result-content {
-            border: 4px dashed var(--accent-gold);
-            border-radius: 30px;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            max-width: 90%; width: 500px;
+            border: 4px dashed var(--accent-gold); border-radius: 30px; padding: 40px;
+            background: rgba(255, 255, 255, 0.1); max-width: 90%; width: 500px;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
         }
         .result-title { font-size: 2.5rem; color: var(--accent-gold); margin-bottom: 20px; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-        .result-gift { font-size: 2rem; color: #fff; margin: 30px 0; line-height: 1.5; }
+        .result-gift { font-size: 2rem; color: #fff; margin: 30px 0; line-height: 1.5; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
         .result-hint { font-size: 1.2rem; color: #ddd; margin-top: 30px; }
 
         @media (max-width: 480px) {
-            h1 { font-size: 2.4rem; }
-            .gift-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            #donald { width: 220px; left: -40px; } /* 手機版微調 */
-            #olaf { width: 160px; right: -30px; } /* 手機版微調 */
-            .start-btn { font-size: 1.4rem; padding: 14px 35px; }
-            .magic-btn { font-size: 1.5rem; padding: 15px 30px; width: 85%; }
-            .result-title { font-size: 2rem; }
-            .result-gift { font-size: 1.6rem; }
+            h1 { font-size: 2.4rem; } .gift-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            #donald { width: 220px; left: -40px; } #olaf { width: 160px; right: -30px; }
+            .start-btn, .magic-btn { font-size: 1.4rem; padding: 15px 30px; width: 85%; }
+            .result-title { font-size: 2rem; } .result-gift { font-size: 1.6rem; }
+            .magic-box-container { width: 120px; height: 120px; } .gift-box-anim { font-size: 90px; }
         }
     </style>
 </head>
@@ -199,30 +170,20 @@
     <div class="result-content">
         <div class="result-title">✨ 魔法成真！✨</div>
         <div style="font-size: 1.3rem; color: #eee;">恭喜阿吟獲得：</div>
-        <div class="result-gift" id="final-gift-display">
-            </div>
+        <div class="result-gift" id="final-gift-display"></div>
         <div class="result-hint">快截圖傳給龍二哥兌換 ❤️</div>
-        <button onclick="closeResult()" style="margin-top:20px; background:none; border:1px solid #aaa; color:#aaa; padding:5px 15px; border-radius:20px; cursor:pointer;">關閉</button>
+        <button onclick="closeResult()" style="margin-top:20px; background:linear-gradient(45deg, #ffd700, #ff8c00); border:none; color:#1a1a2e; padding:10px 25px; border-radius:20px; cursor:pointer; font-weight:bold; font-family:var(--cartoon-font);">關閉</button>
     </div>
 </div>
 
 <div id="yt-player-container"><div id="player"></div></div>
-
 <img src="donald.png" alt="唐老鴨" class="bg-character" id="donald">
-
 <img src="olaf.png" alt="雪寶" class="bg-character" id="olaf">
-
-<div id="music-control">🎵</div>
 
 <div class="section" id="preview-zone">
     <h1>親愛的阿吟，生日快樂！</h1>
     <div class="english-title">✨ A Magical Day for You ✨</div>
-    
-    <p class="subtitle">
-        願這份魔法帶走你的疲累。<br>
-        龍二哥準備了六份健康好禮，<br>
-        請先過目，再下滑揭曉你的驚喜 💖
-    </p>
+    <p class="subtitle">願這份魔法帶走你的疲累。<br>龍二哥準備了六份健康好禮，<br>請先過目，再下滑揭曉你的驚喜 💖</p>
     
     <div class="gift-grid">
         <div class="gift-item"><span class="icon">🧘‍♀️</span>Lululemon<br>運動服飾套組</div>
@@ -239,7 +200,11 @@
 <div class="section" id="draw-zone">
     <div class="lottery-container">
         <h2 style="color:var(--accent-gold); font-size: 2rem;">✨ 命運禮物盒 ✨</h2>
-        <div class="gift-box-anim" id="drawBtn">🎁</div>
+        
+        <div class="magic-box-container" id="drawBtnContainer">
+            <div class="gift-box-anim" id="drawBtn">🎁</div>
+        </div>
+        
         <div id="result-text"></div>
     </div>
     <p style="margin-top: 40px; color: var(--accent-gold); font-size: 1.6rem; font-weight: 700;">With Love, from 龍二哥</p>
@@ -249,9 +214,6 @@
 
 <script>
     let player;
-    let isPlaying = false;
-    let isOpened = false;
-
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
             height: '1', width: '1', videoId: 'TeQ_TTyLGMs',
@@ -259,38 +221,26 @@
             events: { 'onReady': onPlayerReady }
         });
     }
-
     function onPlayerReady(event) { console.log("YT Ready"); }
 
-    // 開場邏輯
     document.getElementById('enter-btn').addEventListener('click', function() {
-        if (player && typeof player.playVideo === 'function') {
-            player.playVideo();
-            document.getElementById('music-control').classList.add('playing');
-            isPlaying = true;
-        }
+        if (player && typeof player.playVideo === 'function') player.playVideo();
         const screen = document.getElementById('start-screen');
         screen.style.opacity = '0';
-        document.getElementById('music-control').style.opacity = '1';
         setTimeout(() => { screen.style.display = 'none'; }, 1500);
     });
 
-    // 關閉結果頁邏輯
-    function closeResult() {
-        document.getElementById('result-screen').style.display = 'none';
-    }
+    function closeResult() { document.getElementById('result-screen').style.display = 'none'; }
 
-    const musicBtn = document.getElementById('music-control');
-    function toggleMusic() {
-        if (!player) return;
-        if (isPlaying) { player.pauseVideo(); musicBtn.classList.remove('playing'); }
-        else { player.playVideo(); musicBtn.classList.add('playing'); }
-        isPlaying = !isPlaying;
-    }
-    musicBtn.addEventListener('click', toggleMusic);
-
+    // 前往抽獎按鈕邏輯：顯示並滑動
     document.getElementById('go-draw-btn').addEventListener('click', () => {
-        document.getElementById('draw-zone').scrollIntoView();
+        const drawZone = document.getElementById('draw-zone');
+        drawZone.style.display = 'flex'; // 顯示區塊
+        // 稍微延遲以確保顯示後再滑動
+        setTimeout(() => {
+             drawZone.style.opacity = '1';
+             drawZone.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
     });
 
     const gifts = [
@@ -302,9 +252,12 @@
         { name: "智慧健康監測運動手錶", icon: "⌚" }
     ];
 
-    document.getElementById('drawBtn').addEventListener('click', () => {
+    let isOpened = false;
+    // 修改監聽對象為容器，點擊範圍更大
+    document.getElementById('drawBtnContainer').addEventListener('click', () => {
         if (isOpened) return;
         let count = 0;
+        const drawBtnIcon = document.getElementById('drawBtn');
         const interval = setInterval(() => {
             document.getElementById('result-text').innerText = gifts[Math.floor(Math.random() * gifts.length)].name;
             count++;
@@ -313,24 +266,18 @@
 
         function finalize() {
             const finalGift = gifts[Math.floor(Math.random() * gifts.length)];
-            
-            // 填入結果頁資料
             const resultDisplay = document.getElementById('final-gift-display');
             resultDisplay.innerHTML = `<span style="font-size: 3.5rem; display:block; margin-bottom:10px;">${finalGift.icon}</span>${finalGift.name}`;
-            
-            // 顯示結果遮罩層
             const resultScreen = document.getElementById('result-screen');
             resultScreen.style.display = 'flex';
-
-            // 噴射紙屑 (同時在前景噴)
-            confetti({
-                particleCount: 250, spread: 100, origin: { y: 0.6 },
-                colors: ['#ffd700', '#ffffff', '#ff8c00', '#533483'],
-                zIndex: 10001 // 確保紙屑在結果頁上面
-            });
-
-            // 更新網頁原本的文字 (作為備份顯示)
-            document.getElementById('drawBtn').innerHTML = "🎉";
+            confetti({ particleCount: 250, spread: 100, origin: { y: 0.6 }, colors: ['#ffd700', '#ffffff', '#ff8c00', '#533483'], zIndex: 10001 });
+            
+            // 停止禮物盒動畫並改變圖示
+            const container = document.getElementById('drawBtnContainer');
+            container.style.animation = 'none'; // 停止漂浮
+            drawBtnIcon.innerHTML = "🎉";
+            drawBtnIcon.style.filter = "drop-shadow(0 0 30px var(--accent-gold))"; // 維持發光
+            
             document.getElementById('result-text').innerHTML = `恭喜阿吟獲得：<br>${finalGift.icon} ${finalGift.name}`;
             isOpened = true;
         }
