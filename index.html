@@ -13,7 +13,7 @@
     
     <style>
         :root {
-            --primary-color: #ffda79; /* 亮金色 */
+            --primary-color: #ffda79;
             --text-color: #ffffff;
             --accent-gold: #ffd700;
             --handwriting-font: 'Long Cang', cursive;
@@ -25,7 +25,6 @@
 
         body {
             font-family: var(--serif-font);
-            /* 迪士尼魔法星空深藍漸層 */
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 30%, #0f3460 60%, #533483 100%);
             background-attachment: fixed;
             margin: 0;
@@ -34,7 +33,6 @@
             overflow-x: hidden;
         }
 
-        /* 奇幻星塵 (Pixie Dust) 動態效果 */
         body::before {
             content: "";
             position: fixed;
@@ -52,7 +50,6 @@
             to { transform: translateY(-550px); }
         }
 
-        /* --- 本地端圖片：唐老鴨與雪寶 --- */
         .bg-character {
             position: fixed;
             z-index: 0;
@@ -63,7 +60,6 @@
         #donald { bottom: -10px; left: -20px; width: 180px; transform: rotate(10deg); }
         #olaf { top: 60px; right: -10px; width: 130px; transform: rotate(-15deg); }
 
-        /* 字體強制修復 */
         .hw-text, h1, h2, .gift-item, .start-btn, #result-text, .subtitle {
             font-family: var(--handwriting-font) !important;
             text-rendering: optimizeLegibility;
@@ -83,18 +79,9 @@
         }
 
         h1 { font-size: 2.8rem; margin-bottom: 5px; color: var(--accent-gold); text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
-        
-        .english-title {
-            font-family: var(--english-font) !important;
-            font-size: 1.8rem;
-            color: #ffffff;
-            margin-bottom: 25px;
-            letter-spacing: 2px;
-        }
-
+        .english-title { font-family: var(--english-font) !important; font-size: 1.8rem; color: #ffffff; margin-bottom: 25px; letter-spacing: 2px; }
         .subtitle { font-size: 1.3rem; line-height: 1.6; margin-bottom: 40px; color: #f0f0f0; }
 
-        /* 禮物網格 (6個選項) */
         .gift-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -115,7 +102,6 @@
         }
         .icon { font-size: 28px; display: block; margin-bottom: 8px; }
 
-        /* 迪士尼風格按鈕 */
         .start-btn {
             -webkit-appearance: none;
             background: linear-gradient(45deg, #ffd700, #ff8c00);
@@ -129,7 +115,14 @@
             transition: 0.3s;
         }
 
-        /* 音樂旋轉按鈕 */
+        /* 隱藏 YouTube 播放器 */
+        #yt-player-container {
+            position: absolute;
+            width: 1px; height: 1px;
+            overflow: hidden;
+            opacity: 0;
+        }
+
         #music-control {
             position: fixed;
             top: 20px;
@@ -151,7 +144,6 @@
         .playing { animation: rotate 3s linear infinite; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* 抽獎區 */
         .lottery-container {
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(15px);
@@ -161,7 +153,7 @@
             width: 90%;
             max-width: 400px;
         }
-        .gift-box-anim { font-size: 100px; cursor: pointer; margin: 20px 0; display: inline-block; filter: drop-shadow(0 0 15px rgba(255,255,255,0.5)); }
+        .gift-box-anim { font-size: 100px; cursor: pointer; margin: 20px 0; display: inline-block; }
         #result-text { font-size: 1.8rem; color: var(--accent-gold); min-height: 1.8em; }
 
         @media (max-width: 480px) {
@@ -174,9 +166,9 @@
 </head>
 <body>
 
-<audio id="bgm" loop>
-    <source src="birthday_music.mp3" type="audio/mpeg">
-</audio>
+<div id="yt-player-container">
+    <div id="player"></div>
+</div>
 
 <img src="donald.png" alt="唐老鴨" class="bg-character" id="donald">
 <img src="olaf.png" alt="雪寶" class="bg-character" id="olaf">
@@ -213,22 +205,47 @@
     <p style="margin-top: 40px; font-family: var(--english-font); color: var(--accent-gold); font-size: 1.5rem;">With Love, from 龍二哥</p>
 </div>
 
+<script src="https://www.youtube.com/iframe_api"></script>
+
 <script>
-    const audio = document.getElementById('bgm');
+    let player;
+    let isPlaying = false;
+    let isOpened = false;
+
+    // YouTube API 初始化
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            height: '1',
+            width: '1',
+            videoId: 'TeQ_TTyLGMs', // 龍二哥指定的影片 ID
+            playerVars: {
+                'autoplay': 0,
+                'controls': 0,
+                'loop': 1,
+                'playlist': 'TeQ_TTyLGMs'
+            },
+            events: {
+                'onReady': onPlayerReady
+            }
+        });
+    }
+
+    function onPlayerReady(event) {
+        console.log("YouTube 準備就緒");
+    }
+
     const musicBtn = document.getElementById('music-control');
     const goDrawBtn = document.getElementById('go-draw-btn');
     const drawBtn = document.getElementById('drawBtn');
     const resultText = document.getElementById('result-text');
-    let isPlaying = false;
-    let isOpened = false;
 
-    // 音樂開關功能
     function toggleMusic() {
+        if (!player) return;
         if (isPlaying) {
-            audio.pause();
+            player.pauseVideo();
             musicBtn.classList.remove('playing');
         } else {
-            audio.play().catch(() => { console.log("等待手動點擊後播放"); });
+            player.playVideo();
             musicBtn.classList.add('playing');
         }
         isPlaying = !isPlaying;
@@ -236,7 +253,6 @@
 
     musicBtn.addEventListener('click', toggleMusic);
 
-    // 點擊「開啟」同時嘗試啟動音樂並捲動
     goDrawBtn.addEventListener('click', () => {
         if (!isPlaying) toggleMusic();
         document.getElementById('draw-zone').scrollIntoView();
@@ -267,22 +283,17 @@
 
         function finalize() {
             const finalGift = gifts[Math.floor(Math.random() * gifts.length)];
-            
             confetti({
                 particleCount: 200,
                 spread: 90,
                 origin: { y: 0.6 },
                 colors: ['#ffd700', '#ffffff', '#ff8c00', '#533483']
             });
-
             drawBtn.innerHTML = "🎉";
             resultText.style.color = 'var(--accent-gold)';
             resultText.innerHTML = `恭喜阿吟獲得：<br>${finalGift.icon} ${finalGift.name}`;
             isOpened = true;
-
-            setTimeout(() => {
-                alert("✨ 魔法成真！阿吟快截圖傳給龍二哥吧 ❤️");
-            }, 600);
+            setTimeout(() => { alert("✨ 魔法成真！阿吟快截圖傳給龍二哥吧 ❤️"); }, 600);
         }
     });
 </script>
