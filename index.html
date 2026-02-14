@@ -65,3 +65,185 @@
             align-items: center;
             padding: 30px 20px;
             box-sizing: border-box;
+        }
+
+        /* 優化後的禮物卡片 */
+        .gift-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 25px;
+            max-width: 700px;
+            width: 100%;
+            margin-bottom: 50px;
+        }
+        .gift-item {
+            background: var(--secondary-color);
+            padding: 20px 15px;
+            /* 手繪感的不規則圓角 */
+            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+            /* 柔和的暈染陰影 */
+            box-shadow: 5px 5px 20px rgba(212, 138, 150, 0.15), -5px -5px 20px rgba(255, 255, 255, 0.8);
+            text-align: center;
+            font-family: var(--handwriting-font);
+            font-size: 1.1rem;
+            border: 1px solid rgba(212, 138, 150, 0.2);
+            transition: all 0.3s ease;
+        }
+        .gift-item:hover {
+            transform: translateY(-5px) rotate(1deg);
+            border-color: var(--accent-gold);
+            box-shadow: 8px 8px 25px rgba(212, 138, 150, 0.25);
+        }
+        .icon { font-size: 36px; display: block; margin-bottom: 12px; opacity: 0.9; }
+
+        /* 手寫風按鈕 */
+        .start-btn {
+            font-family: var(--handwriting-font);
+            background: linear-gradient(45deg, var(--primary-color), #eba3b0);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(212, 138, 150, 0.4);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .start-btn:hover { transform: scale(1.05); box-shadow: 0 10px 25px rgba(212, 138, 150, 0.5); }
+
+        /* 抽獎區樣式優化 */
+        .lottery-container {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px); /* 毛玻璃效果 */
+            padding: 50px;
+            border-radius: 30px;
+            border: 2px dashed var(--accent-gold);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+        
+        .gift-box-anim {
+            font-size: 110px;
+            cursor: pointer;
+            margin: 30px 0;
+            display: inline-block;
+            filter: drop-shadow(0 10px 15px rgba(212, 138, 150, 0.3));
+            transition: transform 0.3s;
+        }
+        .gift-box-anim:hover { transform: rotate(5deg) scale(1.1); }
+        
+        #result-text {
+            font-family: var(--handwriting-font);
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-top: 20px;
+            min-height: 1.8em;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+        .footer {
+            margin-top: 60px;
+            font-family: var(--english-handwriting);
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+        }
+    </style>
+</head>
+<body>
+
+<div class="section" id="preview-zone">
+    <h1>親愛的妹妹，生日快樂！</h1>
+    <div class="english-title">Happy Birthday, My Dearest Sister.</div>
+    <p class="subtitle">
+        希望你工作之餘，也能好好愛自己。<br>
+        哥哥準備了幾份「健康寵愛禮」，<br>
+        請先看看選項，再下滑抽取你的專屬驚喜 💖
+    </p>
+    
+    <div class="gift-grid">
+        <div class="gift-item"><span class="icon">🧘‍♀️</span>Lululemon<br>運動服飾套組</div>
+        <div class="gift-item"><span class="icon">😴</span>高品質真絲<br>遮光眼罩</div>
+        <div class="gift-item"><span class="icon">🔫</span>輕巧版<br>深層筋膜槍</div>
+        <div class="gift-item"><span class="icon">🛌</span>人體工學<br>午睡紓壓枕</div>
+        <div class="gift-item"><span class="icon">💆‍♀️</span>全身經絡<br>深層 SPA</div>
+        <div class="gift-item"><span class="icon">⌚</span>智慧健康<br>監測手錶</div>
+    </div>
+
+    <button class="start-btn" onclick="document.getElementById('draw-zone').scrollIntoView();">前往抽取專屬禮物 ✨</button>
+</div>
+
+<div class="section" id="draw-zone">
+    <div class="lottery-container">
+        <h2>✨ 命運的禮物盒 ✨</h2>
+        <p style="font-family: var(--handwriting-font);">輕觸禮物盒，揭曉你的生日驚喜</p>
+        <div class="gift-box-anim" id="drawBtn">🎁</div>
+        <div id="result-text"></div>
+    </div>
+    
+    <p class="footer">With Love, from Brother (MIS Dept.)</p>
+</div>
+
+<script>
+    // 禮物資料內容保持不變
+    const gifts = [
+        { name: "Lululemon 專業運動服飾套組", icon: "🧘‍♀️" },
+        { name: "高品質真絲全遮光眼罩", icon: "😴" },
+        { name: "輕巧版深層舒緩筋膜槍", icon: "🔫" },
+        { name: "人體工學午睡紓壓枕", icon: "🛌" },
+        { name: "全身經絡深層按摩 SPA 課程", icon: "💆‍♀️" },
+        { name: "智慧健康監測運動手錶", icon: "⌚" }
+    ];
+
+    const drawBtn = document.getElementById('drawBtn');
+    const resultText = document.getElementById('result-text');
+    let isOpened = false;
+
+    drawBtn.addEventListener('click', () => {
+        if (isOpened) return;
+
+        // 播放一點點輕微的震動效果
+        if (navigator.vibrate) navigator.vibrate(50);
+
+        let count = 0;
+        const interval = setInterval(() => {
+            // 抽獎過程中的文字也使用手寫體
+            resultText.innerText = gifts[Math.floor(Math.random() * gifts.length)].name;
+            // 讓文字顏色稍微閃爍
+            resultText.style.color = count % 2 === 0 ? '#d48a96' : '#cca876';
+            count++;
+            if (count > 12) {
+                clearInterval(interval);
+                finalize();
+            }
+        }, 100);
+
+        function finalize() {
+            const finalGift = gifts[Math.floor(Math.random() * gifts.length)];
+            
+            // 調整紙屑顏色以配合主題
+            confetti({
+                particleCount: 180,
+                spread: 80,
+                origin: { y: 0.6 },
+                colors: ['#d48a96', '#cca876', '#fdf6e3', '#ffffff']
+            });
+
+            drawBtn.innerHTML = "🎉";
+            // 確保最終結果顏色正確
+            resultText.style.color = 'var(--primary-color)';
+            resultText.innerHTML = `恭喜獲得：<br>${finalGift.icon} ${finalGift.name}`;
+            isOpened = true;
+
+            setTimeout(() => {
+                // 這裡的 alert 也可以考慮換成更漂亮的模型視窗，但為了簡單起見先保留
+                alert("恭喜！請截圖這個畫面傳給哥哥兌換喔 ❤️");
+            }, 600);
+        }
+    });
+</script>
+
+</body>
+</html>
