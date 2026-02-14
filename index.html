@@ -3,100 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>妹妹生日快樂！專屬禮物領取</title>
+    <title>妹妹生日快樂！健康禮物選拔賽</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
+        :root {
+            --primary-color: #ff85a2;
+            --bg-color: #fff5f7;
+        }
         body {
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-            background-color: #fdf2f2; /* 溫暖淡粉色 */
+            background-color: var(--bg-color);
+            margin: 0;
+            color: #444;
+            scroll-behavior: smooth; /* 讓捲動更平滑 */
+        }
+        .section {
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
+            padding: 20px;
+            box-sizing: border-box;
         }
-        .container {
-            text-align: center;
+        h1 { color: #d63384; margin-bottom: 10px; }
+        .subtitle { color: #888; margin-bottom: 30px; text-align: center; }
+
+        /* 禮物預覽清單樣式 */
+        .gift-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            max-width: 600px;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+        .gift-item {
             background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            max-width: 400px;
-            width: 90%;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            text-align: center;
+            font-size: 0.9rem;
+            border: 2px solid transparent;
+            transition: 0.3s;
         }
-        h1 { color: #d63384; font-size: 1.5rem; }
-        p { color: #666; line-height: 1.6; }
-        .gift-box {
-            font-size: 80px;
-            cursor: pointer;
-            transition: transform 0.3s;
-            margin: 20px 0;
-        }
-        .gift-box:hover { transform: scale(1.1) rotate(5deg); }
-        .gift-box:active { transform: scale(0.9); }
-        #result {
-            margin-top: 20px;
-            font-weight: bold;
-            color: #28a745;
+        .gift-item:hover { border-color: var(--primary-color); }
+        .icon { font-size: 30px; display: block; margin-bottom: 8px; }
+
+        .start-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 40px;
             font-size: 1.2rem;
-            min-height: 1.5em;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 133, 162, 0.4);
+            transition: 0.3s;
         }
-        .footer {
-            margin-top: 30px;
-            font-size: 0.8rem;
-            color: #aaa;
+        .start-btn:hover { background-color: #ff5c8a; transform: translateY(-3px); }
+
+        /* 抽獎區樣式 */
+        #draw-zone { background-color: white; width: 100%; }
+        .lottery-box {
+            text-align: center;
+            padding: 40px;
+            border: 3px dashed var(--primary-color);
+            border-radius: 30px;
+            background: var(--bg-color);
         }
+        .gift-box-anim {
+            font-size: 100px;
+            cursor: pointer;
+            margin: 20px 0;
+            display: inline-block;
+        }
+        #result-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #d63384;
+            margin-top: 20px;
+            min-height: 1.6em;
+        }
+        .footer { margin-top: 50px; font-size: 0.8rem; color: #ccc; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>🎂 祝妹妹生日快樂！</h1>
-    <p>最近辛苦了，常熬夜也要照顧健康。<br>哥哥準備了幾份健康大禮，請點擊禮物盒領取：</p>
+<div class="section" id="preview-zone">
+    <h1>🎂 生日快樂！妹妹</h1>
+    <p class="subtitle">今年哥哥準備了「健康養生大禮包」<br>點擊下方按鈕開始抽取你的專屬好禮！</p>
     
-    <div class="gift-box" id="giftBtn">🎁</div>
-    
-    <div id="result"></div>
+    <div class="gift-grid">
+        <div class="gift-item"><span class="icon">🧘‍♀️</span>Lululemon 裝備</div>
+        <div class="gift-item"><span class="icon">😴</span>真絲遮光眼罩</div>
+        <div class="gift-item"><span class="icon">🔫</span>深層筋膜槍</div>
+        <div class="gift-item"><span class="icon">🛌</span>紓壓午睡枕</div>
+        <div class="gift-item"><span class="icon">💆‍♀️</span>全身按摩 SPA</div>
+        <div class="gift-item"><span class="icon">⌚</span>健康監測手錶</div>
+    </div>
 
-    <p class="footer">由 哥哥的 Python 實驗室技術提供支援</p>
+    <button class="start-btn" onclick="document.getElementById('draw-zone').scrollIntoView();">準備好了，去抽獎！ ✨</button>
+</div>
+
+<div class="section" id="draw-zone">
+    <div class="lottery-box">
+        <h2>命運抽獎時刻</h2>
+        <p>點擊下方的禮物盒，看看選中哪一個？</p>
+        <div class="gift-box-anim" id="drawBtn">🎁</div>
+        <div id="result-text"></div>
+    </div>
+    
+    <p class="footer">Made with ❤️ by 哥哥 (MIS Dept.)</p>
 </div>
 
 <script>
     const gifts = [
-        "🧘‍♀️ Lululemon 專業運動服飾一套",
-        "🛏️ 高品質真絲全遮光眼罩",
-        "🔫 輕巧版深層舒緩筋膜槍",
-        "😴 人體工學午睡紓壓枕",
-        "🍎 全身經絡深層按摩 SPA 課程",
-        "⌚ 智慧健康監測運動手錶"
+        { name: "Lululemon 專業運動服飾一套", icon: "🧘‍♀️" },
+        { name: "高品質真絲全遮光眼罩", icon: "😴" },
+        { name: "輕巧版深層舒緩筋膜槍", icon: "🔫" },
+        { name: "人體工學午睡紓壓枕", icon: "🛌" },
+        { name: "全身經絡深層按摩 SPA 課程", icon: "💆‍♀️" },
+        { name: "智慧健康監測運動手錶", icon: "⌚" }
     ];
 
-    const btn = document.getElementById('giftBtn');
-    const result = document.getElementById('result');
-    let opened = false;
+    const drawBtn = document.getElementById('drawBtn');
+    const resultText = document.getElementById('result-text');
+    let isOpened = false;
 
-    btn.addEventListener('click', () => {
-        if (opened) return;
-        
-        // 噴灑紙屑特效
-        confetti({
-            particleCount: 150,
-            spread: 70,
-            origin: { y: 0.6 }
-        });
+    drawBtn.addEventListener('click', () => {
+        if (isOpened) return;
 
-        // 隨機選取禮物
-        const finalGift = gifts[Math.floor(Math.random() * gifts.length)];
-        
-        btn.innerHTML = "✨";
-        result.innerHTML = `恭喜獲得：<br>${finalGift}`;
-        opened = true;
+        // 簡單的隨機滾動效果感
+        let count = 0;
+        const interval = setInterval(() => {
+            resultText.innerText = gifts[Math.floor(Math.random() * gifts.length)].name;
+            count++;
+            if (count > 10) {
+                clearInterval(interval);
+                finalize();
+            }
+        }, 100);
 
-        // 額外驚喜提示
-        setTimeout(() => {
-            alert("領取成功！請截圖傳給哥哥兌換喔 ❤️");
-        }, 500);
+        function finalize() {
+            const finalGift = gifts[Math.floor(Math.random() * gifts.length)];
+            
+            // 噴灑紙屑
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+
+            drawBtn.innerHTML = "🎉";
+            resultText.innerHTML = `恭喜獲得：<br>${finalGift.icon} ${finalGift.name}`;
+            isOpened = true;
+
+            setTimeout(() => {
+                alert("太棒了！記得截圖傳給哥哥領取喔！");
+            }, 500);
+        }
     });
 </script>
 
