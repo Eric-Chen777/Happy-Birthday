@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
@@ -16,30 +16,25 @@
             --primary-color: #ffda79;
             --text-color: #ffffff;
             --accent-gold: #ffd700;
-            /* 字體堆疊策略 (Font Stack)：
-               1. Noto Serif TC: Google 優雅宋體
-               2. PingFang TC: Mac/iOS 內建黑體/宋體
-               3. Microsoft JhengHei: Windows 正黑體
-               4. serif: 系統預設襯線體
-            */
-            --main-font: 'Noto Serif TC', 'PingFang TC', 'Microsoft JhengHei', serif; 
-            --english-font: 'Dancing Script', cursive;
+            /* 卡通風格字體堆疊：優先使用圓潤的 Fredoka，中文則後退到系統圓體/黑體 */
+            --cartoon-font: 'Fredoka', '微軟正黑體', 'Microsoft JhengHei', 'PingFang TC', 'Heiti TC', system-ui, sans-serif;
         }
 
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
 
         body {
-            font-family: var(--main-font); /* 套用穩定字體 */
+            font-family: var(--cartoon-font); /* 套用卡通字體 */
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 30%, #0f3460 60%, #533483 100%);
             background-attachment: fixed;
             margin: 0;
             color: var(--text-color);
             scroll-behavior: smooth;
             overflow-x: hidden;
-            letter-spacing: 0.05em; /* 增加一點字距提升質感 */
+            letter-spacing: 0.02em; /* 卡通字體通常字距較緊密一點比較可愛 */
+            font-weight: 600; /* 整體加粗一點更有卡通感 */
         }
 
-        /* 奇幻星塵效果 */
+        /* 奇幻星塵背景 */
         body::before {
             content: "";
             position: fixed;
@@ -57,141 +52,132 @@
             to { transform: translateY(-550px); }
         }
 
-        .bg-character {
+        /* --- 開場遮罩層 --- */
+        #start-screen {
             position: fixed;
-            z-index: 0;
-            opacity: 0.3;
-            pointer-events: none;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #533483 100%);
+            z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 1.5s ease;
+        }
+
+        #enter-btn {
+            background: transparent;
+            border: 3px solid var(--accent-gold); /* 邊框加粗 */
+            color: var(--accent-gold);
+            padding: 25px 45px;
+            font-size: 1.8rem;
+            border-radius: 25px; /* 更圓潤 */
+            cursor: pointer;
+            font-family: var(--cartoon-font);
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* --- 主要內容 --- */
+        .bg-character {
+            position: fixed; z-index: 0; opacity: 0.3; pointer-events: none;
             filter: drop-shadow(0 0 10px rgba(255, 218, 121, 0.3));
         }
         #donald { bottom: -10px; left: -20px; width: 180px; transform: rotate(10deg); }
         #olaf { top: 60px; right: -10px; width: 150px; transform: rotate(-15deg); }
 
-        /* 通用字體設定 */
-        h1, h2, .gift-item, .start-btn, #result-text, .subtitle, p {
-            font-family: var(--main-font) !important;
-            font-weight: 700; /* 加粗讓文字在深色背景更清晰 */
+        /* 確保所有元素都使用卡通字體 */
+        h1, h2, .gift-item, .start-btn, #result-text, .subtitle, p, .english-title {
+            font-family: var(--cartoon-font) !important;
         }
 
         .section {
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 20px;
-            position: relative;
-            z-index: 1;
-            text-align: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 40px 20px; position: relative; z-index: 1; text-align: center;
         }
 
-        h1 { font-size: 2.6rem; margin-bottom: 10px; color: var(--accent-gold); text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
-        .english-title { font-family: var(--english-font) !important; font-size: 2rem; color: #ffffff; margin-bottom: 25px; letter-spacing: 2px; }
-        .subtitle { font-size: 1.2rem; line-height: 1.8; margin-bottom: 40px; color: #f0f0f0; font-weight: 400; }
+        h1 { font-size: 2.8rem; margin-bottom: 10px; color: var(--accent-gold); text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); font-weight: 700; }
+        .english-title { font-size: 2.2rem; color: #ffffff; margin-bottom: 25px; letter-spacing: 1px; font-weight: 600; }
+        
+        .subtitle { 
+            font-size: 1.4rem; line-height: 1.8; margin-bottom: 40px; color: #f0f0f0; font-weight: 600; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
 
         .gift-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            max-width: 600px;
-            width: 100%;
-            margin-bottom: 40px;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;
+            max-width: 600px; width: 100%; margin-bottom: 40px;
         }
         .gift-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px 10px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            border: 1px solid rgba(255, 218, 121, 0.3);
-            backdrop-filter: blur(8px);
-            color: #fff;
-            font-size: 1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            background: rgba(255, 255, 255, 0.15); padding: 15px 10px; border-radius: 20px; /* 更圓 */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 2px solid rgba(255, 218, 121, 0.4); /* 邊框加粗 */
+            backdrop-filter: blur(8px); color: #fff; font-size: 1.1rem; font-weight: 600;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        .icon { font-size: 32px; display: block; margin-bottom: 10px; }
+        .icon { font-size: 36px; display: block; margin-bottom: 10px; }
 
         .start-btn {
-            -webkit-appearance: none;
-            background: linear-gradient(45deg, #ffd700, #ff8c00);
-            color: #1a1a2e;
-            border: none;
-            padding: 16px 45px;
-            font-size: 1.5rem;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
-            transition: 0.3s;
-            font-weight: bold;
+            -webkit-appearance: none; background: linear-gradient(45deg, #ffd700, #ff8c00);
+            color: #1a1a2e; border: none; padding: 18px 50px; font-size: 1.6rem;
+            border-radius: 50px; cursor: pointer; box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+            transition: 0.3s; font-weight: 700;
         }
         .start-btn:active { transform: scale(0.95); }
 
-        #yt-player-container {
-            position: absolute;
-            width: 1px; height: 1px;
-            overflow: hidden;
-            opacity: 0;
-        }
+        #yt-player-container { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
 
         #music-control {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-            background: rgba(255, 255, 255, 0.2);
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            cursor: pointer;
-            border: 1px solid var(--accent-gold);
-            color: #fff;
-            backdrop-filter: blur(5px);
+            position: fixed; top: 20px; right: 20px; z-index: 100;
+            background: rgba(255, 255, 255, 0.2); width: 50px; height: 50px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer;
+            border: 2px solid var(--accent-gold); color: #fff; backdrop-filter: blur(5px);
+            opacity: 0; transition: opacity 1s; font-size: 24px;
         }
         .playing { animation: rotate 3s linear infinite; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         .lottery-container {
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(15px);
-            padding: 40px 20px;
-            border-radius: 30px;
-            border: 2px solid var(--accent-gold);
-            width: 90%;
-            max-width: 400px;
+            background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(15px); padding: 40px 20px;
+            border-radius: 35px; border: 3px solid var(--accent-gold); width: 90%; max-width: 400px;
         }
-        .gift-box-anim { font-size: 100px; cursor: pointer; margin: 20px 0; display: inline-block; }
-        #result-text { font-size: 1.6rem; color: var(--accent-gold); min-height: 2em; line-height: 1.4; }
+        .gift-box-anim { font-size: 110px; cursor: pointer; margin: 20px 0; display: inline-block; }
+        #result-text { font-size: 1.8rem; color: var(--accent-gold); min-height: 2em; line-height: 1.4; font-weight: 700; }
 
         @media (max-width: 480px) {
-            h1 { font-size: 2.2rem; }
+            h1 { font-size: 2.4rem; }
             .gift-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             #donald { width: 140px; }
             #olaf { width: 100px; }
-            .start-btn { font-size: 1.3rem; padding: 14px 35px; }
+            .start-btn { font-size: 1.4rem; padding: 14px 35px; }
+            #enter-btn { font-size: 1.5rem; padding: 15px 30px; width: 85%; }
         }
     </style>
 </head>
 <body>
 
-<div id="yt-player-container">
-    <div id="player"></div>
+<div id="start-screen">
+    <button id="enter-btn">親愛的阿吟，生日快樂！<br><span style="font-size:1.1rem; opacity:0.9; display:block; margin-top:15px;">✨ 點選開啟魔法 ✨</span></button>
 </div>
+
+<div id="yt-player-container"><div id="player"></div></div>
 
 <img src="donald.png" alt="唐老鴨" class="bg-character" id="donald">
 
-<img src="https://www.clipartmax.com/png/middle/83-834319_frozen-clip-art-olaf-frozen.png" alt="雪寶" class="bg-character" id="olaf">
+<img src="olaf.png" alt="雪寶" class="bg-character" id="olaf">
 
 <div id="music-control">🎵</div>
 
 <div class="section" id="preview-zone">
     <h1>親愛的阿吟，生日快樂！</h1>
     <div class="english-title">✨ A Magical Day for You ✨</div>
+    
     <p class="subtitle">
         願這份魔法帶走你的疲累。<br>
         龍二哥準備了六份健康好禮，<br>
@@ -207,16 +193,16 @@
         <div class="gift-item"><span class="icon">⌚</span>智慧健康<br>監測手錶</div>
     </div>
 
-    <button class="start-btn" id="go-draw-btn">開啟魔法驚喜 ✨</button>
+    <button class="start-btn" id="go-draw-btn">前往抽獎 ✨</button>
 </div>
 
 <div class="section" id="draw-zone">
     <div class="lottery-container">
-        <h2 style="color:var(--accent-gold);">✨ 命運禮物盒 ✨</h2>
+        <h2 style="color:var(--accent-gold); font-size: 2rem;">✨ 命運禮物盒 ✨</h2>
         <div class="gift-box-anim" id="drawBtn">🎁</div>
         <div id="result-text"></div>
     </div>
-    <p style="margin-top: 40px; font-family: var(--english-font); color: var(--accent-gold); font-size: 1.5rem;">With Love, from 龍二哥</p>
+    <p style="margin-top: 40px; color: var(--accent-gold); font-size: 1.6rem; font-weight: 700;">With Love, from 龍二哥</p>
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
@@ -228,46 +214,37 @@
 
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
-            height: '1',
-            width: '1',
-            videoId: 'TeQ_TTyLGMs',
-            playerVars: {
-                'autoplay': 0,
-                'controls': 0,
-                'loop': 1,
-                'playlist': 'TeQ_TTyLGMs'
-            },
-            events: {
-                'onReady': onPlayerReady
-            }
+            height: '1', width: '1', videoId: 'TeQ_TTyLGMs',
+            playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': 'TeQ_TTyLGMs' },
+            events: { 'onReady': onPlayerReady }
         });
     }
 
-    function onPlayerReady(event) {
-        console.log("YouTube 準備就緒");
-    }
+    function onPlayerReady(event) { console.log("YT Ready"); }
+
+    // 開場邏輯
+    document.getElementById('enter-btn').addEventListener('click', function() {
+        if (player && typeof player.playVideo === 'function') {
+            player.playVideo();
+            document.getElementById('music-control').classList.add('playing');
+            isPlaying = true;
+        }
+        const screen = document.getElementById('start-screen');
+        screen.style.opacity = '0';
+        document.getElementById('music-control').style.opacity = '1';
+        setTimeout(() => { screen.style.display = 'none'; }, 1500);
+    });
 
     const musicBtn = document.getElementById('music-control');
-    const goDrawBtn = document.getElementById('go-draw-btn');
-    const drawBtn = document.getElementById('drawBtn');
-    const resultText = document.getElementById('result-text');
-
     function toggleMusic() {
         if (!player) return;
-        if (isPlaying) {
-            player.pauseVideo();
-            musicBtn.classList.remove('playing');
-        } else {
-            player.playVideo();
-            musicBtn.classList.add('playing');
-        }
+        if (isPlaying) { player.pauseVideo(); musicBtn.classList.remove('playing'); }
+        else { player.playVideo(); musicBtn.classList.add('playing'); }
         isPlaying = !isPlaying;
     }
-
     musicBtn.addEventListener('click', toggleMusic);
 
-    goDrawBtn.addEventListener('click', () => {
-        if (!isPlaying) toggleMusic();
+    document.getElementById('go-draw-btn').addEventListener('click', () => {
         document.getElementById('draw-zone').scrollIntoView();
     });
 
@@ -280,31 +257,23 @@
         { name: "智慧健康監測運動手錶", icon: "⌚" }
     ];
 
-    drawBtn.addEventListener('click', () => {
+    document.getElementById('drawBtn').addEventListener('click', () => {
         if (isOpened) return;
-        
         let count = 0;
         const interval = setInterval(() => {
-            resultText.innerText = gifts[Math.floor(Math.random() * gifts.length)].name;
-            resultText.style.color = count % 2 === 0 ? '#ffd700' : '#ffffff';
+            document.getElementById('result-text').innerText = gifts[Math.floor(Math.random() * gifts.length)].name;
             count++;
-            if (count > 15) {
-                clearInterval(interval);
-                finalize();
-            }
+            if (count > 15) { clearInterval(interval); finalize(); }
         }, 80);
 
         function finalize() {
             const finalGift = gifts[Math.floor(Math.random() * gifts.length)];
             confetti({
-                particleCount: 200,
-                spread: 90,
-                origin: { y: 0.6 },
+                particleCount: 200, spread: 90, origin: { y: 0.6 },
                 colors: ['#ffd700', '#ffffff', '#ff8c00', '#533483']
             });
-            drawBtn.innerHTML = "🎉";
-            resultText.style.color = 'var(--accent-gold)';
-            resultText.innerHTML = `恭喜阿吟獲得：<br>${finalGift.icon} ${finalGift.name}`;
+            document.getElementById('drawBtn').innerHTML = "🎉";
+            document.getElementById('result-text').innerHTML = `恭喜阿吟獲得：<br>${finalGift.icon} ${finalGift.name}`;
             isOpened = true;
             setTimeout(() => { alert("✨ 魔法成真！阿吟快截圖傳給龍二哥吧 ❤️"); }, 600);
         }
