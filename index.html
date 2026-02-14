@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Long+Cang&family=Noto+Serif+TC:wght@400;700&display=block" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
     
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
@@ -16,23 +16,30 @@
             --primary-color: #ffda79;
             --text-color: #ffffff;
             --accent-gold: #ffd700;
-            --handwriting-font: 'Long Cang', cursive;
+            /* 字體堆疊策略 (Font Stack)：
+               1. Noto Serif TC: Google 優雅宋體
+               2. PingFang TC: Mac/iOS 內建黑體/宋體
+               3. Microsoft JhengHei: Windows 正黑體
+               4. serif: 系統預設襯線體
+            */
+            --main-font: 'Noto Serif TC', 'PingFang TC', 'Microsoft JhengHei', serif; 
             --english-font: 'Dancing Script', cursive;
-            --serif-font: 'Noto Serif TC', serif;
         }
 
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
 
         body {
-            font-family: var(--serif-font);
+            font-family: var(--main-font); /* 套用穩定字體 */
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 30%, #0f3460 60%, #533483 100%);
             background-attachment: fixed;
             margin: 0;
             color: var(--text-color);
             scroll-behavior: smooth;
             overflow-x: hidden;
+            letter-spacing: 0.05em; /* 增加一點字距提升質感 */
         }
 
+        /* 奇幻星塵效果 */
         body::before {
             content: "";
             position: fixed;
@@ -53,17 +60,17 @@
         .bg-character {
             position: fixed;
             z-index: 0;
-            opacity: 0.3; /* 提高一點透明度讓新雪寶更清楚 */
+            opacity: 0.3;
             pointer-events: none;
             filter: drop-shadow(0 0 10px rgba(255, 218, 121, 0.3));
         }
         #donald { bottom: -10px; left: -20px; width: 180px; transform: rotate(10deg); }
         #olaf { top: 60px; right: -10px; width: 150px; transform: rotate(-15deg); }
 
-        .hw-text, h1, h2, .gift-item, .start-btn, #result-text, .subtitle {
-            font-family: var(--handwriting-font) !important;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
+        /* 通用字體設定 */
+        h1, h2, .gift-item, .start-btn, #result-text, .subtitle, p {
+            font-family: var(--main-font) !important;
+            font-weight: 700; /* 加粗讓文字在深色背景更清晰 */
         }
 
         .section {
@@ -78,9 +85,9 @@
             text-align: center;
         }
 
-        h1 { font-size: 2.8rem; margin-bottom: 5px; color: var(--accent-gold); text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
-        .english-title { font-family: var(--english-font) !important; font-size: 1.8rem; color: #ffffff; margin-bottom: 25px; letter-spacing: 2px; }
-        .subtitle { font-size: 1.3rem; line-height: 1.6; margin-bottom: 40px; color: #f0f0f0; }
+        h1 { font-size: 2.6rem; margin-bottom: 10px; color: var(--accent-gold); text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+        .english-title { font-family: var(--english-font) !important; font-size: 2rem; color: #ffffff; margin-bottom: 25px; letter-spacing: 2px; }
+        .subtitle { font-size: 1.2rem; line-height: 1.8; margin-bottom: 40px; color: #f0f0f0; font-weight: 400; }
 
         .gift-grid {
             display: grid;
@@ -99,8 +106,12 @@
             backdrop-filter: blur(8px);
             color: #fff;
             font-size: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        .icon { font-size: 28px; display: block; margin-bottom: 8px; }
+        .icon { font-size: 32px; display: block; margin-bottom: 10px; }
 
         .start-btn {
             -webkit-appearance: none;
@@ -108,12 +119,14 @@
             color: #1a1a2e;
             border: none;
             padding: 16px 45px;
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
             transition: 0.3s;
+            font-weight: bold;
         }
+        .start-btn:active { transform: scale(0.95); }
 
         #yt-player-container {
             position: absolute;
@@ -153,13 +166,14 @@
             max-width: 400px;
         }
         .gift-box-anim { font-size: 100px; cursor: pointer; margin: 20px 0; display: inline-block; }
-        #result-text { font-size: 1.8rem; color: var(--accent-gold); min-height: 1.8em; }
+        #result-text { font-size: 1.6rem; color: var(--accent-gold); min-height: 2em; line-height: 1.4; }
 
         @media (max-width: 480px) {
             h1 { font-size: 2.2rem; }
             .gift-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             #donald { width: 140px; }
             #olaf { width: 100px; }
+            .start-btn { font-size: 1.3rem; padding: 14px 35px; }
         }
     </style>
 </head>
@@ -198,9 +212,9 @@
 
 <div class="section" id="draw-zone">
     <div class="lottery-container">
-        <h2 class="hw-text" style="color:var(--accent-gold);">✨ 命運禮物盒 ✨</h2>
+        <h2 style="color:var(--accent-gold);">✨ 命運禮物盒 ✨</h2>
         <div class="gift-box-anim" id="drawBtn">🎁</div>
-        <div id="result-text" class="hw-text"></div>
+        <div id="result-text"></div>
     </div>
     <p style="margin-top: 40px; font-family: var(--english-font); color: var(--accent-gold); font-size: 1.5rem;">With Love, from 龍二哥</p>
 </div>
