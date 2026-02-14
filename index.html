@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>妹妹生日快樂！專屬禮物領取</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background-color: #fdf2f2; /* 溫暖淡粉色 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 90%;
+        }
+        h1 { color: #d63384; font-size: 1.5rem; }
+        p { color: #666; line-height: 1.6; }
+        .gift-box {
+            font-size: 80px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            margin: 20px 0;
+        }
+        .gift-box:hover { transform: scale(1.1) rotate(5deg); }
+        .gift-box:active { transform: scale(0.9); }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #28a745;
+            font-size: 1.2rem;
+            min-height: 1.5em;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎂 祝妹妹生日快樂！</h1>
+    <p>最近辛苦了，常熬夜也要照顧健康。<br>哥哥準備了幾份健康大禮，請點擊禮物盒領取：</p>
+    
+    <div class="gift-box" id="giftBtn">🎁</div>
+    
+    <div id="result"></div>
+
+    <p class="footer">由 哥哥的 Python 實驗室技術提供支援</p>
+</div>
+
+<script>
+    const gifts = [
+        "🧘‍♀️ Lululemon 專業運動服飾一套",
+        "🛏️ 高品質真絲全遮光眼罩",
+        "🔫 輕巧版深層舒緩筋膜槍",
+        "😴 人體工學午睡紓壓枕",
+        "🍎 全身經絡深層按摩 SPA 課程",
+        "⌚ 智慧健康監測運動手錶"
+    ];
+
+    const btn = document.getElementById('giftBtn');
+    const result = document.getElementById('result');
+    let opened = false;
+
+    btn.addEventListener('click', () => {
+        if (opened) return;
+        
+        // 噴灑紙屑特效
+        confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+
+        // 隨機選取禮物
+        const finalGift = gifts[Math.floor(Math.random() * gifts.length)];
+        
+        btn.innerHTML = "✨";
+        result.innerHTML = `恭喜獲得：<br>${finalGift}`;
+        opened = true;
+
+        // 額外驚喜提示
+        setTimeout(() => {
+            alert("領取成功！請截圖傳給哥哥兌換喔 ❤️");
+        }, 500);
+    });
+</script>
+
+</body>
+</html>
