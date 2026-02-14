@@ -2,59 +2,68 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To 阿吟：生日快樂與來自龍二哥專屬的寵愛</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>To 阿吟：生日快樂與專屬寵愛</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Long+Cang&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Long+Cang&family=Noto+Serif+TC:wght@400;700&display=block" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
         :root {
-            /* 定義新色票：更柔和、高級 */
-            --primary-color: #d48a96; /* 乾燥玫瑰粉 */
-            --secondary-color: #fdf6e3; /* 奶油米白 */
-            --text-color: #5c4b51; /* 暖深灰 */
-            --accent-gold: #cca876; /* 質感金 */
-            /* 定義字體堆疊 */
-            --handwriting-font: 'Long Cang', cursive; /* 中文手寫 */
-            --english-handwriting: 'Dancing Script', cursive; /* 英文手寫 */
-            --serif-font: 'Noto Serif TC', serif; /* 易讀襯線體 */
+            --primary-color: #d48a96;
+            --secondary-color: #fdf6e3;
+            --text-color: #5c4b51;
+            --accent-gold: #cca876;
+            --handwriting-font: 'Long Cang', cursive;
+            --english-font: 'Dancing Script', cursive;
+            --serif-font: 'Noto Serif TC', serif;
         }
+
+        * { -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: var(--serif-font);
-            /* 模擬高級紙張的柔和漸層背景 */
             background: linear-gradient(135deg, #fffbf0 0%, #fcefe8 100%);
             margin: 0;
             color: var(--text-color);
             scroll-behavior: smooth;
-            /* 加入極細微的噪點紋理，增加紙張感 (選擇性) */
+            /* 原本的紙張紋理 */
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+            overflow-x: hidden; /* 防止角色圖片超出邊界產生橫向捲軸 */
         }
 
-        h1, h2 {
-            font-family: var(--handwriting-font);
-            font-weight: normal;
-            color: var(--primary-color);
+        /* --- 新增：背景角色樣式 --- */
+        .bg-character {
+            position: fixed; /* 固定在視窗，不隨捲動移動 */
+            z-index: -1; /* 放在最底層，文字後方 */
+            opacity: 0.15; /* 非常淡的透明度，像浮水印 */
+            pointer-events: none; /* 確保滑鼠點擊穿透，不影響操作 */
+            filter: sepia(0.2) contrast(0.9); /* 稍微調整色調融入暖色背景 */
+            transition: all 0.5s ease;
         }
 
-        h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        
-        .english-title {
-            font-family: var(--english-handwriting);
-            font-size: 1.8rem;
-            color: var(--accent-gold);
-            margin-top: -10px;
-            margin-bottom: 20px;
+        #donald {
+            bottom: -20px;
+            left: -30px;
+            width: 200px;
+            transform: rotate(15deg);
         }
 
-        .subtitle {
-            font-family: var(--handwriting-font);
-            font-size: 1.2rem;
-            margin-bottom: 40px;
-            text-align: center;
-            line-height: 1.8;
+        #olaf {
+            top: 50px;
+            right: -20px;
+            width: 150px;
+            transform: rotate(-10deg);
+        }
+        /* ------------------------ */
+
+        .hw-text, h1, h2, .gift-item, .start-btn, #result-text, .subtitle {
+            font-family: var(--handwriting-font) !important;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
         }
 
         .section {
@@ -63,156 +72,182 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 30px 20px;
+            padding: 40px 20px;
             box-sizing: border-box;
+            text-align: center;
+            position: relative; /* 確保內容在角色上方 */
+            z-index: 1;
         }
 
-        /* 優化後的禮物卡片 */
+        h1 { font-size: 2.8rem; margin-bottom: 10px; color: var(--primary-color); }
+        
+        .english-title {
+            font-family: var(--english-font) !important;
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            margin-bottom: 25px;
+        }
+
+        .subtitle { font-size: 1.3rem; line-height: 1.8; margin-bottom: 40px; }
+
         .gift-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 25px;
-            max-width: 700px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 600px;
             width: 100%;
             margin-bottom: 50px;
         }
+        
         .gift-item {
-            background: var(--secondary-color);
-            padding: 20px 15px;
-            /* 手繪感的不規則圓角 */
-            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
-            /* 柔和的暈染陰影 */
-            box-shadow: 5px 5px 20px rgba(212, 138, 150, 0.15), -5px -5px 20px rgba(255, 255, 255, 0.8);
-            text-align: center;
-            font-family: var(--handwriting-font);
+            background: rgba(253, 246, 227, 0.9); /* 稍微增加不透明度，避免被背景角色干擾 */
+            padding: 20px 10px;
+            border-radius: 20px 10px 20px 10px;
+            box-shadow: 5px 5px 15px rgba(212, 138, 150, 0.1);
             font-size: 1.1rem;
             border: 1px solid rgba(212, 138, 150, 0.2);
-            transition: all 0.3s ease;
+            transition: 0.3s;
+            backdrop-filter: blur(2px);
         }
-        .gift-item:hover {
-            transform: translateY(-5px) rotate(1deg);
-            border-color: var(--accent-gold);
-            box-shadow: 8px 8px 25px rgba(212, 138, 150, 0.25);
-        }
-        .icon { font-size: 36px; display: block; margin-bottom: 12px; opacity: 0.9; }
 
-        /* 手寫風按鈕 */
+        .icon { font-size: 30px; display: block; margin-bottom: 10px; }
+
         .start-btn {
-            font-family: var(--handwriting-font);
+            -webkit-appearance: none;
             background: linear-gradient(45deg, var(--primary-color), #eba3b0);
             color: white;
             border: none;
-            padding: 18px 50px;
-            font-size: 1.5rem;
+            padding: 16px 45px;
+            font-size: 1.6rem;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(212, 138, 150, 0.4);
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(212, 138, 150, 0.3);
         }
-        .start-btn:hover { transform: scale(1.05); box-shadow: 0 10px 25px rgba(212, 138, 150, 0.5); }
 
-        /* 抽獎區樣式優化 */
+        #music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            font-size: 20px;
+            border: 2px solid var(--secondary-color);
+        }
+
+        .playing { animation: rotate 3s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
         .lottery-container {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px); /* 毛玻璃效果 */
-            padding: 50px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 40px 20px;
             border-radius: 30px;
             border: 2px dashed var(--accent-gold);
-            text-align: center;
-            max-width: 500px;
             width: 90%;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            max-width: 400px;
         }
-        
-        .gift-box-anim {
-            font-size: 110px;
-            cursor: pointer;
-            margin: 30px 0;
-            display: inline-block;
-            filter: drop-shadow(0 10px 15px rgba(212, 138, 150, 0.3));
-            transition: transform 0.3s;
-        }
-        .gift-box-anim:hover { transform: rotate(5deg) scale(1.1); }
-        
-        #result-text {
-            font-family: var(--handwriting-font);
-            font-size: 1.8rem;
-            color: var(--primary-color);
-            margin-top: 20px;
-            min-height: 1.8em;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
-        }
-        .footer {
-            margin-top: 60px;
-            font-family: var(--english-handwriting);
-            font-size: 1.1rem;
-            color: var(--accent-gold);
+
+        .gift-box-anim { font-size: 100px; cursor: pointer; margin: 20px 0; display: inline-block; }
+        #result-text { font-size: 1.8rem; color: var(--primary-color); min-height: 1.5em; }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2.2rem; }
+            .gift-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .gift-item { font-size: 0.95rem; }
+            /* 手機版調整角色大小與位置 */
+            #donald { width: 150px; bottom: -10px; left: -20px; }
+            #olaf { width: 100px; top: 70px; right: -15px; }
         }
     </style>
 </head>
 <body>
 
+<audio id="bgm" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+
+<img src="https://upload.wikimedia.org/wikipedia/en/thumb/b/b4/Donald_Duck.svg/220px-Donald_Duck.svg.png" alt="唐老鴨" class="bg-character" id="donald">
+<img src="https://upload.wikimedia.org/wikipedia/en/thumb/d/d7/Olaf_from_Disney%27s_Frozen.png/170px-Olaf_from_Disney%27s_Frozen.png" alt="雪寶" class="bg-character" id="olaf">
+
+<div id="music-control">🎵</div>
+
 <div class="section" id="preview-zone">
-    <h1>親愛的妹妹，生日快樂！</h1>
-    <div class="english-title">Happy Birthday, My Dearest Sister.</div>
+    <h1>親愛的阿吟，生日快樂！</h1>
+    <div class="english-title">Happy Birthday, Dear Yin.</div>
     <p class="subtitle">
-        希望你工作之餘，也能好好愛自己。<br>
-        龍二哥準備了幾份「健康寵愛禮」，<br>
-        請先看看選項，再下滑抽取你的專屬驚喜 💖
+        常熬夜也要記得愛護身體。<br>
+        龍二哥準備了幾份專屬於你的驚喜，<br>
+        點擊下方按鈕，揭曉你的專屬好禮 💖
     </p>
     
     <div class="gift-grid">
-        <div class="gift-item"><span class="icon">🧘‍♀️</span>Lululemon<br>運動服飾套組</div>
-        <div class="gift-item"><span class="icon">😴</span>高品質真絲<br>遮光眼罩</div>
-        <div class="gift-item"><span class="icon">🔫</span>輕巧版<br>深層筋膜槍</div>
-        <div class="gift-item"><span class="icon">🛌</span>人體工學<br>午睡紓壓枕</div>
-        <div class="gift-item"><span class="icon">💆‍♀️</span>全身經絡<br>深層 SPA</div>
-        <div class="gift-item"><span class="icon">⌚</span>智慧健康<br>監測手錶</div>
+        <div class="gift-item"><span class="icon">🧘‍♀️</span>Lululemon 套組</div>
+        <div class="gift-item"><span class="icon">😴</span>真絲遮光眼罩</div>
+        <div class="gift-item"><span class="icon">🔫</span>深層筋膜槍</div>
+        <div class="gift-item"><span class="icon">💆‍♀️</span>舒壓 SPA 課程</div>
     </div>
 
-    <button class="start-btn" onclick="document.getElementById('draw-zone').scrollIntoView();">前往抽取專屬禮物 ✨</button>
+    <button class="start-btn" id="go-draw-btn">前往抽取禮物 ✨</button>
 </div>
 
 <div class="section" id="draw-zone">
     <div class="lottery-container">
-        <h2>✨ 命運的禮物盒 ✨</h2>
-        <p style="font-family: var(--handwriting-font);">輕觸禮物盒，揭曉你的生日驚喜</p>
+        <h2 class="hw-text">✨ 命運禮物盒 ✨</h2>
         <div class="gift-box-anim" id="drawBtn">🎁</div>
         <div id="result-text"></div>
     </div>
-    
-    <p class="footer">With Love, from Brother (MIS Dept.)</p>
+    <p style="margin-top: 40px; font-family: var(--english-font); color: var(--accent-gold); font-size: 1.2rem;">With Love, from 龍二哥</p>
 </div>
 
 <script>
-    // 禮物資料內容保持不變
-    const gifts = [
-        { name: "Lululemon 專業運動服飾套組", icon: "🧘‍♀️" },
-        { name: "高品質真絲全遮光眼罩", icon: "😴" },
-        { name: "輕巧版深層舒緩筋膜槍", icon: "🔫" },
-        { name: "人體工學午睡紓壓枕", icon: "🛌" },
-        { name: "全身經絡深層按摩 SPA 課程", icon: "💆‍♀️" },
-        { name: "智慧健康監測運動手錶", icon: "⌚" }
-    ];
-
+    // ... (JavaScript 部分與之前相同，無需更動) ...
+    const audio = document.getElementById('bgm');
+    const musicBtn = document.getElementById('music-control');
+    const goDrawBtn = document.getElementById('go-draw-btn');
     const drawBtn = document.getElementById('drawBtn');
     const resultText = document.getElementById('result-text');
+    let isPlaying = false;
     let isOpened = false;
+
+    function toggleMusic() {
+        if (isPlaying) {
+            audio.pause();
+            musicBtn.classList.remove('playing');
+        } else {
+            audio.play().catch(() => { console.log("等待互動後播放"); });
+            musicBtn.classList.add('playing');
+        }
+        isPlaying = !isPlaying;
+    }
+
+    musicBtn.addEventListener('click', toggleMusic);
+
+    goDrawBtn.addEventListener('click', () => {
+        if (!isPlaying) toggleMusic();
+        document.getElementById('draw-zone').scrollIntoView();
+    });
+
+    const gifts = [
+        { name: "Lululemon 專業運動服飾", icon: "🧘‍♀️" },
+        { name: "高品質真絲遮光眼罩", icon: "😴" },
+        { name: "輕巧版深層舒緩筋膜槍", icon: "🔫" },
+        { name: "全身經絡深層按摩 SPA", icon: "💆‍♀️" }
+    ];
 
     drawBtn.addEventListener('click', () => {
         if (isOpened) return;
-
-        // 播放一點點輕微的震動效果
-        if (navigator.vibrate) navigator.vibrate(50);
-
+        
         let count = 0;
         const interval = setInterval(() => {
-            // 抽獎過程中的文字也使用手寫體
             resultText.innerText = gifts[Math.floor(Math.random() * gifts.length)].name;
-            // 讓文字顏色稍微閃爍
-            resultText.style.color = count % 2 === 0 ? '#d48a96' : '#cca876';
             count++;
             if (count > 12) {
                 clearInterval(interval);
@@ -222,25 +257,16 @@
 
         function finalize() {
             const finalGift = gifts[Math.floor(Math.random() * gifts.length)];
-            
-            // 調整紙屑顏色以配合主題
             confetti({
-                particleCount: 180,
-                spread: 80,
+                particleCount: 150,
+                spread: 70,
                 origin: { y: 0.6 },
-                colors: ['#d48a96', '#cca876', '#fdf6e3', '#ffffff']
+                colors: ['#d48a96', '#cca876', '#ffffff']
             });
-
             drawBtn.innerHTML = "🎉";
-            // 確保最終結果顏色正確
-            resultText.style.color = 'var(--primary-color)';
             resultText.innerHTML = `恭喜獲得：<br>${finalGift.icon} ${finalGift.name}`;
             isOpened = true;
-
-            setTimeout(() => {
-                // 這裡的 alert 也可以考慮換成更漂亮的模型視窗，但為了簡單起見先保留
-                alert("恭喜！請截圖這個畫面傳給哥哥兌換喔 ❤️");
-            }, 600);
+            setTimeout(() => { alert("阿吟生日快樂！截圖傳給龍二哥領獎喔！"); }, 500);
         }
     });
 </script>
